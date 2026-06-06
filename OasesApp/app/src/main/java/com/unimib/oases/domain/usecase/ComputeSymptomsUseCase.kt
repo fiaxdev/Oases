@@ -1,5 +1,6 @@
 package com.unimib.oases.domain.usecase
 
+import com.unimib.oases.domain.model.VitalKey
 import com.unimib.oases.domain.model.symptom.PatientCategory
 import com.unimib.oases.domain.model.symptom.TriageSymptom
 import com.unimib.oases.domain.model.symptom.TriageSymptom.Companion.DBP_HIGH
@@ -105,68 +106,12 @@ class ComputeSymptomsUseCase @Inject constructor(){
 
     }
 
-//    fun computeRedSymptoms(
-//        selectedReds: Set<String>,
-//        patient: Patient,
-//        vitalSigns: VitalSigns
-//    ): Set<String>{
-//        val newReds = selectedReds.resetComputedElements()
-//        when (patient.category){
-//            PatientCategory.ADULT -> {
-////                if (vitalSigns.sbp != null && vitalSigns.sbp >= PREGNANCY_HIGH_SBP ||
-////                    vitalSigns.dbp != null && vitalSigns.dbp >= PREGNANCY_HIGH_DBP
-////                )
-////                    newReds.add(TriageSymptom.PREGNANCY_HIGH_BP.id)
-//            }
-//            PatientCategory.PEDIATRIC -> {
-////                if (ageInMonths < 2 &&
-////                    vitalSigns.temp != null &&
-////                    (vitalSigns.temp < TEMP_LOW || vitalSigns.temp > TEMP_HIGH)
-////                )
-////                    newReds.add(TriageSymptom.YOUNGER_THAN_TWO_MONTHS_AND_LOW_OR_HIGH_TEMPERATURE.id)
-//            }
-//        }
-//        return newReds.toSet()
-//    }
-
     data class VitalRange(
         val low: Double? = null,
         val high: Double? = null
     )
 
-    enum class VitalKey {
-        SPO2,
-        RR,
-        HR,
-        SBP,
-        DBP,
-        TEMP,
-        RBS;
 
-        fun getLowerBoundSymptom(): TriageSymptom? {
-            return when (this) {
-                SPO2 -> TriageSymptom.LOW_SPO2
-                RR -> TriageSymptom.LOW_RR
-                HR -> TriageSymptom.LOW_HR
-                SBP -> TriageSymptom.LOW_SBP
-                DBP -> null
-                TEMP -> TriageSymptom.LOW_TEMP
-                RBS -> TriageSymptom.LOW_RBS
-            }
-        }
-
-        fun getHigherBoundSymptom(): TriageSymptom? {
-            return when (this) {
-                SPO2 -> null
-                RR -> TriageSymptom.HIGH_RR
-                HR -> TriageSymptom.HIGH_HR
-                SBP -> TriageSymptom.HIGH_SBP
-                DBP -> TriageSymptom.HIGH_DBP
-                TEMP -> TriageSymptom.HIGH_TEMP
-                RBS -> TriageSymptom.HIGH_RBS
-            }
-        }
-    }
 
 
 

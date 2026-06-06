@@ -1,7 +1,6 @@
 package com.unimib.oases.ui.screen.past_visit
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.unimib.oases.di.IoDispatcher
@@ -10,6 +9,8 @@ import com.unimib.oases.domain.repository.MalnutritionScreeningRepository
 import com.unimib.oases.domain.repository.TriageEvaluationRepository
 import com.unimib.oases.domain.repository.VisitRepository
 import com.unimib.oases.domain.usecase.GetChronicDiseasesInfo
+import com.unimib.oases.domain.usecase.GetVisitVitalSignsUseCase
+import com.unimib.oases.domain.usecase.GetVitalSignPrecisionUseCase
 import com.unimib.oases.domain.usecase.PatientUseCase
 import com.unimib.oases.ui.components.scaffold.UiEvent
 import com.unimib.oases.ui.mapper.toState
@@ -17,6 +18,7 @@ import com.unimib.oases.ui.navigation.NavigationEvent
 import com.unimib.oases.ui.navigation.Route
 import com.unimib.oases.ui.screen.nurse_assessment.demographics.toState
 import com.unimib.oases.ui.screen.nurse_assessment.triage.TriageData
+import com.unimib.oases.ui.screen.shared.VitalSignsViewModel
 import com.unimib.oases.util.firstNullableSuccess
 import com.unimib.oases.util.firstSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,9 +40,11 @@ class PastVisitSummaryViewModel @Inject constructor(
     private val triageEvaluationRepository: TriageEvaluationRepository,
     private val malnutritionScreeningRepository: MalnutritionScreeningRepository,
     private val getChronicDiseasesInfo: GetChronicDiseasesInfo,
+    private val getVitalSignsDataUseCase: GetVisitVitalSignsUseCase,
+    getVitalSignPrecisionUseCase: GetVitalSignPrecisionUseCase,
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     savedStateHandle: SavedStateHandle,
-): ViewModel(){
+): VitalSignsViewModel(getVitalSignPrecisionUseCase){
     private val patientErrorHandler = CoroutineExceptionHandler { _, e ->
         e.printStackTrace()
         _state.update{
@@ -68,6 +72,15 @@ class PastVisitSummaryViewModel @Inject constructor(
             )
         }
     }
+    private val vitalSignsErrorHandler = CoroutineExceptionHandler { _, e ->
+        e.printStackTrace()
+        _state.update{
+            it.copy(
+                vitalSignsError = e.message,
+                isVitalSignsLoading = false,
+            )
+        }
+    }
     private val chronicDiseasesErrorHandler = CoroutineExceptionHandler { _, e ->
         e.printStackTrace()
         _state.update{
@@ -81,6 +94,8 @@ class PastVisitSummaryViewModel @Inject constructor(
     val patientContext: CoroutineContext = ioDispatcher + patientErrorHandler
     val triageContext: CoroutineContext = ioDispatcher + triageErrorHandler
     val malnutritionContext: CoroutineContext = ioDispatcher + malnutritionErrorHandler
+
+    val vitalSignsContext: CoroutineContext = ioDispatcher + vitalSignsErrorHandler
     val chronicDiseasesContext: CoroutineContext = ioDispatcher + chronicDiseasesErrorHandler
 
     val args: Route.MalnutritionScreening = savedStateHandle.toRoute()
@@ -113,6 +128,7 @@ class PastVisitSummaryViewModel @Inject constructor(
             launch(triageContext) { getTriageAndVisitData() }
             launch(malnutritionContext) { getMalnutritionData() }
             launch(chronicDiseasesContext) { getChronicDiseasesData() }
+            launch(vitalSignsContext) { getVitalSignsData() }
         }
     }
 
@@ -134,6 +150,16 @@ class PastVisitSummaryViewModel @Inject constructor(
                     .firstNullableSuccess()
                     .toState(),
                 isMalnutritionDataLoading = false,
+            )
+        }
+    }
+
+    private suspend fun getVitalSignsData() {
+        _state.update {
+            it.copy(
+                vitalSignsState = getVitalSignsDataUseCase(it.patientId, it.visitId)
+                    .firstSuccess()
+                    .toRecapState()
             )
         }
     }

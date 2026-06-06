@@ -20,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -71,7 +72,10 @@ fun MalnutritionScreeningSummary(
                 if (hasEditButton) {
                     IconButton(
                         onClick = { onEvent(MalnutritionScreeningEvent.EditButtonPressed) },
-                        modifier = Modifier.padding(end = 16.dp)
+                        modifier = Modifier.padding(end = 16.dp),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f)
+                        )
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,

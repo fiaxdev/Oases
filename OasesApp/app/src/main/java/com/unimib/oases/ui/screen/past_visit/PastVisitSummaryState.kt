@@ -2,6 +2,7 @@ package com.unimib.oases.ui.screen.past_visit
 
 import com.unimib.oases.domain.model.TriageCode
 import com.unimib.oases.domain.model.Visit
+import com.unimib.oases.ui.components.vitals.VitalSignsRecapState
 import com.unimib.oases.ui.screen.nurse_assessment.demographics.PatientData
 import com.unimib.oases.ui.screen.nurse_assessment.history.PatientDiseaseState
 import com.unimib.oases.ui.screen.nurse_assessment.malnutrition_screening.MalnutritionScreeningData
@@ -21,6 +22,10 @@ data class PastVisitSummaryState(
     val isTriageDataLoading: Boolean = false,
     val triageError: String? = null,
 
+    val vitalSignsState: VitalSignsRecapState = VitalSignsRecapState(),
+    val isVitalSignsLoading: Boolean = false,
+    val vitalSignsError: String? = null,
+
     val malnutritionData: MalnutritionScreeningData? = null,
     val isMalnutritionDataLoading: Boolean = false,
     val malnutritionError: String? = null,
@@ -29,7 +34,11 @@ data class PastVisitSummaryState(
     val isChronicDiseasesDataLoading: Boolean = false,
     val chronicDiseasesError: String? = null,
 
-) {
+    ) {
     val isLoading: Boolean
-        get() = isPatientDataLoading || isTriageDataLoading || isMalnutritionDataLoading || isChronicDiseasesDataLoading
+        get() = isPatientDataLoading
+                || isTriageDataLoading
+                || isMalnutritionDataLoading
+                || isVitalSignsLoading
+                || isChronicDiseasesDataLoading
 }

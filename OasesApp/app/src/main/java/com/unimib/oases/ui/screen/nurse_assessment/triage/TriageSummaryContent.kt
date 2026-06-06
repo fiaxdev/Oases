@@ -49,7 +49,7 @@ fun TriageSummaryContent(
             onEvent(TriageEvent.CreateButtonPressed)
         }
     } else {
-        TriageCard(state.storedData, onEvent, modifier)
+        TriageCard(state.storedData, { onEvent(TriageEvent.EditButtonPressed) }, modifier)
     }
 }
 
@@ -58,7 +58,7 @@ fun TriageSummaryContent(
 @Composable
 fun TriageCard(
     data: TriageData,
-    onEvent: (TriageEvent) -> Unit,
+    onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
     hasEditButton: Boolean = true,
 ) {
@@ -90,7 +90,7 @@ fun TriageCard(
 
                 if (hasEditButton){
                     IconButton(
-                        onClick = { onEvent(TriageEvent.EditButtonPressed) }
+                        onClick = { onEditClick() }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
