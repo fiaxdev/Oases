@@ -6,3 +6,5 @@ data class VisitVitalSign (
     val timestamp: String,
     val value: Double
 )
+
+enum class VitalSignSeverity { NORMAL, WARNING }

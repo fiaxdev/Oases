@@ -8,6 +8,7 @@ import com.unimib.oases.di.IoDispatcher
 import com.unimib.oases.domain.model.Room
 import com.unimib.oases.domain.model.VisitVitalSign
 import com.unimib.oases.domain.model.symptom.TriageSymptom.Companion.triageSymptoms
+import com.unimib.oases.domain.model.toVitalKey
 import com.unimib.oases.domain.repository.PatientRepository
 import com.unimib.oases.domain.repository.RoomRepository
 import com.unimib.oases.domain.repository.TriageEvaluationRepository
@@ -504,19 +505,6 @@ class TriageViewModel @Inject constructor(
 
         viewModelScope.launch(roomsContext) {
             collectRooms()
-        }
-    }
-
-    private fun String.toVitalKey(): ComputeSymptomsUseCase.VitalKey? {
-        return when (this) {
-            "Systolic Blood Pressure" -> ComputeSymptomsUseCase.VitalKey.SBP
-            "Diastolic Blood Pressure" -> ComputeSymptomsUseCase.VitalKey.DBP
-            "Heart Rate" -> ComputeSymptomsUseCase.VitalKey.HR
-            "Oxygen Saturation" -> ComputeSymptomsUseCase.VitalKey.SPO2
-            "Respiratory Rate" -> ComputeSymptomsUseCase.VitalKey.RR
-            "Temperature" -> ComputeSymptomsUseCase.VitalKey.TEMP
-            "Rapid Blood Sugar" -> ComputeSymptomsUseCase.VitalKey.RBS
-            else -> null
         }
     }
 }

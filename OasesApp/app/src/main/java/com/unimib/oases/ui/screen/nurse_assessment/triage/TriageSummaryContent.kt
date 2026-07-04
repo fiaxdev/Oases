@@ -49,17 +49,18 @@ fun TriageSummaryContent(
             onEvent(TriageEvent.CreateButtonPressed)
         }
     } else {
-        TriageCard(state.storedData, onEvent, modifier)
+        TriageCard(state.storedData, { onEvent(TriageEvent.EditButtonPressed) }, modifier)
     }
 }
 
 
 
 @Composable
-private fun TriageCard(
+fun TriageCard(
     data: TriageData,
-    onEvent: (TriageEvent) -> Unit,
+    onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
+    hasEditButton: Boolean = true,
 ) {
     // Determine triage code and associated color. Handles the null case.
     val triageInfo = remember(data.triageCode) {
@@ -87,13 +88,15 @@ private fun TriageCard(
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                IconButton(
-                    onClick = { onEvent(TriageEvent.EditButtonPressed) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit triage"
-                    )
+                if (hasEditButton){
+                    IconButton(
+                        onClick = { onEditClick() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit triage"
+                        )
+                    }
                 }
             }
             Row(

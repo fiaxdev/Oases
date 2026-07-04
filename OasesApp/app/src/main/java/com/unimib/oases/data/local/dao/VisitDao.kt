@@ -6,6 +6,7 @@ import androidx.room.Upsert
 import com.unimib.oases.data.local.TableNames
 import com.unimib.oases.data.local.model.VisitEntity
 import com.unimib.oases.data.local.model.relation.PatientWithVisitInfoEntity
+import com.unimib.oases.domain.model.PatientStatus
 import com.unimib.oases.util.DateAndTimeUtils
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +17,9 @@ interface VisitDao {
     suspend fun insert(visit: VisitEntity)
 
     @Upsert
+    suspend fun insertVisits(visits: List<VisitEntity>)
+
+    @Upsert
     suspend fun upsert(visit: VisitEntity)
 
     @Query("UPDATE ${TableNames.VISIT} SET patient_status = :status WHERE id = :visitId")
@@ -23,6 +27,17 @@ interface VisitDao {
 
     @Query("SELECT * FROM " + TableNames.VISIT + " WHERE patient_id = :patientId")
     fun getVisits(patientId: String): Flow<List<VisitEntity>>
+
+    @Query("""
+        SELECT * FROM ${TableNames.VISIT}
+        WHERE patient_id = :patientId AND
+        (patient_status == :dismissedStatus OR patient_status == :hospitalizedStatus)
+    """)
+    fun getPastVisits(
+        patientId: String,
+        dismissedStatus: String = PatientStatus.DISMISSED.name,
+        hospitalizedStatus: String = PatientStatus.HOSPITALIZED.name,
+    ): Flow<List<VisitEntity>>
 
     @Query("SELECT * FROM " + TableNames.VISIT + " WHERE id = :visitId")
     fun getVisitById(visitId: String): Flow<VisitEntity>
@@ -41,6 +56,7 @@ interface VisitDao {
             p.next_of_kin AS patient_next_of_kin,
             p.contact AS patient_contact,
             p.image AS patient_image,
+            p.visits_loaded AS patient_visits_loaded,
     
             v.id AS visit_id,
             v.patient_id AS visit_patient_id,

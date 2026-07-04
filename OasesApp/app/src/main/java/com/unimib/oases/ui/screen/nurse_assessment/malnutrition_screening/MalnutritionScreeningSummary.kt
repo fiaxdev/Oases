@@ -20,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -38,9 +39,10 @@ import com.unimib.oases.ui.screen.nurse_assessment.PatientRegistrationScreensUiM
 
 @Composable
 fun MalnutritionScreeningSummary(
-    data: MalnutritionScreeningData,
+    data: MalnutritionScreeningData?,
     onEvent: (MalnutritionScreeningEvent) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
+    hasEditButton: Boolean = true,
 ) {
     val decimalFormat = remember { DecimalFormat("#.#") }
 
@@ -67,14 +69,19 @@ fun MalnutritionScreeningSummary(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
-                IconButton(
-                    onClick = { onEvent(MalnutritionScreeningEvent.EditButtonPressed) },
-                    modifier = Modifier.padding(end = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit malnutrition screening"
-                    )
+                if (hasEditButton) {
+                    IconButton(
+                        onClick = { onEvent(MalnutritionScreeningEvent.EditButtonPressed) },
+                        modifier = Modifier.padding(end = 16.dp),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f)
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit malnutrition screening"
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -91,7 +98,7 @@ fun MalnutritionScreeningSummary(
                 },
                 trailingContent = {
                     Text(
-                        text = data.weight.takeIf { it.isNotBlank() }?.let { "$it kg" }
+                        text = data?.weight?.takeIf { it.isNotBlank() }?.let { "$it kg" }
                             ?: "N/A",
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
@@ -110,7 +117,7 @@ fun MalnutritionScreeningSummary(
                 },
                 trailingContent = {
                     Text(
-                        text = data.height.takeIf { it.isNotBlank() }?.let { "$it cm" }
+                        text = data?.height?.takeIf { it.isNotBlank() }?.let { "$it cm" }
                             ?: "N/A",
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
@@ -129,7 +136,7 @@ fun MalnutritionScreeningSummary(
                 },
                 trailingContent = {
                     Text(
-                        text = data.bmi?.let { decimalFormat.format(it) } ?: "N/A",
+                        text = data?.bmi?.let { decimalFormat.format(it) } ?: "N/A",
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -142,8 +149,8 @@ fun MalnutritionScreeningSummary(
 
             // --- MUAC Section ---
             MuacResult(
-                value = data.muacState.value,
-                category = data.muacState.category
+                value = data?.muacState?.value,
+                category = data?.muacState?.category
             )
         }
     }
@@ -154,7 +161,7 @@ fun MalnutritionScreeningSummary(
  */
 @Composable
 private fun MuacResult(
-    value: String,
+    value: String?,
     category: MuacCategory?,
     modifier: Modifier = Modifier
 ) {
@@ -188,7 +195,7 @@ private fun MuacResult(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = value.takeIf { it.isNotBlank() }?.let { "$it cm" } ?: "N/A",
+                text = value?.takeIf { it.isNotBlank() }?.let { "$it cm" } ?: "N/A",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )

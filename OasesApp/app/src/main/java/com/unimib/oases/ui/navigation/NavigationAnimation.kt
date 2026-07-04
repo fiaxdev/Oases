@@ -16,16 +16,16 @@ sealed interface NavigationAnimation {
     val popExit: ExitTransition
 
     data object Push: NavigationAnimation {
-        override val enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn()
-        override val exit = slideOutHorizontally(targetOffsetX = { -it / 3 }) + fadeOut()
-        override val popEnter = slideInHorizontally(initialOffsetX = { -it / 3 }) + fadeIn()
-        override val popExit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+        override val enter = slideInHorizontally(initialOffsetX = { it })
+        override val exit = slideOutHorizontally(targetOffsetX = { -it })
+        override val popEnter = slideInHorizontally(initialOffsetX = { -it })
+        override val popExit = slideOutHorizontally(targetOffsetX = { it })
     }
 
     data object Modal: NavigationAnimation {
-        override val enter = slideInVertically(initialOffsetY = { it }) + fadeIn()
+        override val enter = slideInVertically(initialOffsetY = { it })
         override val exit = fadeOut()
         override val popEnter = fadeIn()
-        override val popExit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+        override val popExit = slideOutVertically(targetOffsetY = { it })
     }
 }

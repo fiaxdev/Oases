@@ -116,6 +116,10 @@ class RoomDataSource @Inject constructor(
         return patientDao.getPatientById(id)
     }
 
+    suspend fun markVisitsLoaded(patientId: String) {
+        patientDao.markVisitsLoaded(patientId)
+    }
+
 //    fun updateTriageState(patient: PatientEntity, triageState: String) {
 //        patientDao.updateTriageState(patient.id, triageState)
 //    }
@@ -223,6 +227,10 @@ class RoomDataSource @Inject constructor(
         visitDao.insert(visit)
     }
 
+    suspend fun insertVisits(visits: List<VisitEntity>) {
+        visitDao.insertVisits(visits)
+    }
+
     suspend fun insertTriageEvaluationAndUpdateVisit(
         visit: VisitEntity,
         triageEvaluation: TriageEvaluationEntity,
@@ -241,6 +249,10 @@ class RoomDataSource @Inject constructor(
 
     fun getVisits(patientId: String): Flow<List<VisitEntity>> {
         return visitDao.getVisits(patientId)
+    }
+
+    fun getPastVisits(patientId: String): Flow<List<VisitEntity>> {
+        return visitDao.getPastVisits(patientId)
     }
 
     fun getVisitById(visitId: String): Flow<VisitEntity> {
