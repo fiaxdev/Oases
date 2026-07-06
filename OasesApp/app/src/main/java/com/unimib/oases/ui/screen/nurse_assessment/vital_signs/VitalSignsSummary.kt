@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
@@ -17,8 +15,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.unimib.oases.R
 import com.unimib.oases.ui.components.util.TitleText
 import com.unimib.oases.ui.components.util.effect.HandleNavigationEvents
 import com.unimib.oases.ui.components.vitals.VitalSignsCard
@@ -70,10 +70,12 @@ fun VitalSignsTable(
             modifier = Modifier.align(Alignment.BottomEnd),
         ) {
             Icon(
-                imageVector = Icons.Filled.Edit,
+                painter = painterResource(id = R.drawable.outline_thermometer_add_24),
                 contentDescription = "Add vital signs",
                 modifier = Modifier.size(FloatingActionButtonDefaults.LargeIconSize)
             )
         }
     }
 }
+
+
